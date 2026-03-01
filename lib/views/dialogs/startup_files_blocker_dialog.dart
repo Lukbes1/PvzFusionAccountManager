@@ -75,8 +75,9 @@ class _StartupFilesBlockerDialogState
                           onTap: () async => await launchUrl(
                             Uri(
                               scheme: 'https',
-                              host:
-                                  'https://github.com/Lukbes1/PvzFusionAccountManager/blob/main/README.md',
+                              host: 'github.com',
+                              path:
+                                  'Lukbes1/PvzFusionAccountManager/blob/main/README.md',
                             ),
                             mode: LaunchMode.externalApplication,
                           ),
@@ -84,7 +85,7 @@ class _StartupFilesBlockerDialogState
                             textAlign: TextAlign.center,
                             'Please consider reading the documentation! ',
                             style: TextStyle(
-                              color: Color(0xFFAAAAFF),
+                              color: Color(0xFF5DA6F8),
                               decoration: TextDecoration.underline,
                               fontSize: 20,
                               fontFamily: 'pvz',
