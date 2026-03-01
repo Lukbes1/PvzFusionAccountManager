@@ -58,7 +58,7 @@ var
 begin
   if (CurUninstallStep = usUninstall) and DeleteUserData then
   begin
-    DataDir := ExpandConstant('{localappdata}\lukbessolutions\{#MyAppName}');
+    DataDir := ExpandConstant('{localappdata}\lukbessolutions\pvz_fusion_acc_manager');
     DelTree(DataDir, True, True, True);
   end;
 end;
