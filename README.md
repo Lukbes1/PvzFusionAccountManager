@@ -34,7 +34,7 @@ We hope this tool will solve not only our problem but also every PvzFusion fanâ€
 
 ## Installation
 
-The manager installs via an installer found here: [installer](Output/installer.exe)
+The manager installs via an installer found here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.0)
 
 ### Installer Warning
 
