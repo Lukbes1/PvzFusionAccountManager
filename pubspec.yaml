@@ -1,0 +1,59 @@
+name: pvz_fusion_acc_manager
+description: "An account manager for PVZFusion desktop edition"
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  window_manager: ^0.5.1
+  path_provider: ^2.1.5
+  sqflite: ^2.4.2
+  riverpod: ^3.1.0
+  path: ^1.9.1
+  flutter_riverpod: ^3.1.0
+  sqflite_common_ffi: ^2.3.6
+  flutter_svg: ^2.2.3
+  flutter_inner_shadow: ^0.0.1
+  intl: ^0.20.2
+  timeago: ^3.7.1
+  file_picker: ^10.3.9
+  equatable: ^2.0.8
+  url_launcher: ^6.3.2
+  zentoast: ^0.1.3
+
+dev_dependencies:
+  msix: ^3.16.12
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  fonts:
+  - family: Pvz
+    fonts:
+      - asset: resources/fonts/Brianne_s_hand.ttf
+  - family: PvzHeader
+    fonts:
+      - asset: resources/fonts/SERIO___.TTF
+
+  uses-material-design: true
+  assets: 
+    - resources/plants/
+    - resources/background/endoflame.svg
+    - resources/icons/
+
+#flutter pub run msix:create 
+msix_config:
+  display_name: PVZFusion AccountManager
+  publisher_display_name: lukbessolutions
+  identity_name: lukbessolutions.pvzfusionaccountmanager
+  msix_version: 1.0.0.0
+  logo_path: C:\Dev\Flutter\pvz_fusion_acc_manager\pvz_fusion_acc_manager\resources\icons\app_icon.ico
+  execution_alias: pvzfusionaccountmanager

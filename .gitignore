@@ -1,0 +1,133 @@
+# =========================
+# OS GENERATED FILES
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# =========================
+# LOGS & TEMP FILES
+# =========================
+*.log
+*.tmp
+*.temp
+*.cache
+*.out
+*.err
+*.stackdump
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# MISC
+# =========================
+*.class
+*.pyc
+*.swp
+*.swo
+*~
+.history
+.svn/
+.atom/
+.build/
+.buildlog/
+migrate_working_dir/
+Output/
+
+# =========================
+# IDEs
+# =========================
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+!.vscode/extensions.json
+
+# =========================
+# FLUTTER / DART
+# =========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# Generated files
+generated_plugin_registrant.dart
+
+# Coverage
+coverage/
+lcov.info
+
+# =========================
+# ANDROID
+# =========================
+.gradle/
+local.properties
+/android/.gradle
+/android/app/debug/
+/android/app/profile/
+/android/app/release/
+/android/key.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore files 
+*.jks
+*.keystore
+
+# =========================
+# iOS
+# =========================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/ServiceDefinitions.json
+
+# Xcode
+*.xcworkspace
+*.xcuserdata
+*.xcuserstate
+DerivedData/
+
+# =========================
+# SYMBOLICATION
+# =========================
+app.*.symbols
+
+# =========================
+# OBFUSCATION
+# =========================
+app.*.map.json
+
+# =========================
+# TESTING
+# =========================
+test_driver/report.xml
+
+# =========================
+# ENV FILES 
+# =========================
+.env
+.env.*
