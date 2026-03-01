@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pvz_fusion_acc_manager/helper/dialog/general_future_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/dialog/general_future_dialog.dart';
 
 ///Useful for Dialogs
 class GeneralDialog extends StatelessWidget {

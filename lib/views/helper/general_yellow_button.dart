@@ -55,11 +55,7 @@ class GeneralYellowButton extends StatelessWidget {
         child: Center(
           child: Text(
             text,
-            style: TextStyle(
-              color: appPurple,
-              fontSize: fontSize,
-              fontFamily: 'Pvz',
-            ),
+            style: TextStyle(fontSize: fontSize, fontFamily: 'Pvz'),
           ),
         ),
       ),

@@ -1,0 +1,9 @@
+LICENSE
+
+© 2026 Lukbessolutions (Lukas Beschorner and Lana Langen)
+
+This software, including all source code, functionality, and any original assets created specifically for this project, is the exclusive property of Lukas Beschorner and Lana Langen. You may use this software for personal, educational, and non-commercial purposes, but you may not redistribute, sell, or otherwise exploit it commercially in any form without explicit written permission from the authors.
+
+This project is based on a fanmade game. All characters, names, images, music, text, and any other content that resembles or is inspired by the original fanmade game are the property of their respective creators. We claim no ownership or rights over any of these elements. This project is intended purely as a non-commercial fan creation, and it is fully acknowledged that it does not grant or imply any rights to the original content.
+
+By using this software, you acknowledge that the original game assets remain fully copyrighted by their creators, and that this project is a free, fanmade work with no commercial purpose. Any copying, selling, or commercial use of the software or its assets is strictly prohibited. The software and its code remain free forever, and this license exists to make clear the rights of the authors while respecting the intellectual property of the original creators.

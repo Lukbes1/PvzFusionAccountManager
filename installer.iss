@@ -13,6 +13,7 @@ DefaultGroupName={#MyAppName}
 OutputBaseFilename=installer
 Compression=lzma
 SolidCompression=yes
+LicenseFile=license.txt
 UninstallDisplayName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 WizardStyle=modern dark polar

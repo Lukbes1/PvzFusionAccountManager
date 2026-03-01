@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pvz_fusion_acc_manager/helper/dialog/general_future_dialog.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_yellow_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_textfield.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/dialog/general_future_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_yellow_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_textfield.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/accounts_provider.dart';
