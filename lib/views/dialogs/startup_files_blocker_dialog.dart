@@ -2,9 +2,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/helper/dialog/general_future_dialog.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_yellow_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_svg_icon_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/dialog/general_future_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_yellow_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_svg_icon_button.dart';
 import 'package:pvz_fusion_acc_manager/models/data/startup_file.dart';
 import 'package:pvz_fusion_acc_manager/models/data/startup_files_state.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/accounts_provider.dart';
@@ -73,7 +73,11 @@ class _StartupFilesBlockerDialogState
                       children: [
                         InkWell(
                           onTap: () async => await launchUrl(
-                            Uri(scheme: 'https', host: 'google.com'),
+                            Uri(
+                              scheme: 'https',
+                              host:
+                                  'https://github.com/Lukbes1/PvzFusionAccountManager/blob/main/README.md',
+                            ),
                             mode: LaunchMode.externalApplication,
                           ),
                           child: const Text(

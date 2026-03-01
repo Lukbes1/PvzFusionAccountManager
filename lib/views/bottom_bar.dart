@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/helper/top_shadow_wrapper.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/top_shadow_wrapper.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/accounts_provider.dart';
 import 'package:pvz_fusion_acc_manager/style/text.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_circular_progress_indicator.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_circular_progress_indicator.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/startup_files_provider.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';

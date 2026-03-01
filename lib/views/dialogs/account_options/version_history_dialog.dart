@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/helper/dialog/general_future_dialog.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_yellow_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/dialog/general_future_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_yellow_button.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
@@ -114,6 +114,7 @@ class _VersionHistoryDialogState extends ConsumerState<VersionHistoryDialog> {
                               height: 35,
                               width: 350,
                               child: _HistoryButton(
+                                account: widget.currentAccount,
                                 isSelected: selectedVersion == version,
                                 version: version,
                                 onPressed: () {
@@ -203,16 +204,21 @@ class _VersionHistoryDialogInitData {
 class _HistoryButton extends StatelessWidget {
   final bool isSelected;
   final Version version;
+  final Account account;
   final VoidCallback onPressed;
 
   const _HistoryButton({
     required this.version,
     required this.onPressed,
+    required this.account,
     required this.isSelected,
   });
 
   @override
   Widget build(BuildContext context) {
+    final dateStringPrefix = account.creationDate != version.creationDate
+        ? "Last played"
+        : "Created on";
     return ElevatedButton(
       onPressed: onPressed,
       style: ButtonStyle(
@@ -243,7 +249,7 @@ class _HistoryButton extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: Text(
           textAlign: TextAlign.start,
-          'last played ${version.playedOnFormatted}',
+          '$dateStringPrefix ${version.playedOnFormatted}',
           style: const TextStyle(
             color: appPurple,
             fontSize: 18,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_circular_progress_indicator.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_circular_progress_indicator.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';
 import 'package:window_manager/window_manager.dart';
 

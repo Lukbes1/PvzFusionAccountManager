@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_green_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_green_button.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';

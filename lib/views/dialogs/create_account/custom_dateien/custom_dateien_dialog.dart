@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/helper/add_icon_with_label_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/dialog/general_future_dialog.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_yellow_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_green_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/add_icon_with_label_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/dialog/general_future_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_yellow_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_green_button.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/datei.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
@@ -17,7 +17,7 @@ import 'package:pvz_fusion_acc_manager/models/service/datei_service.dart';
 import 'package:pvz_fusion_acc_manager/models/service/explorer_file_service.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';
 import 'package:pvz_fusion_acc_manager/views/account_view_middle.dart';
-import 'package:pvz_fusion_acc_manager/views/dialogs/custom_dateien/custom_dateien_dialog_result.dart';
+import 'package:pvz_fusion_acc_manager/views/dialogs/create_account/custom_dateien/custom_dateien_dialog_result.dart';
 
 class CustomDateienDialog extends ConsumerStatefulWidget {
   final BuildContext parentContext;
@@ -109,10 +109,11 @@ class CustomDateienDialogState extends ConsumerState<CustomDateienDialog> {
                     children: [
                       Center(
                         child: GeneralGreenButton(
+                          borderWidth: 3,
                           fixedSize: Size(150, 35),
                           widget: AddIconWithLabel(
                             text: const Text(
-                              'import files',
+                              'Import files',
                               style: TextStyle(
                                 color: appLightYellow,
                                 fontFamily: 'pvz',

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_green_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/general_svg_hover_icon_button.dart';
-import 'package:pvz_fusion_acc_manager/helper/top_shadow_wrapper.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_green_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_svg_hover_icon_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/top_shadow_wrapper.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/startup_files_provider.dart';
 import 'package:pvz_fusion_acc_manager/style/shadows.dart';
 import 'package:pvz_fusion_acc_manager/views/accounts_view.dart';

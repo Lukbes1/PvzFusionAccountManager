@@ -1,74 +1,206 @@
-![appicon](resources/icons/appicon.png)
+<img width="256" alt="pvzFusionAccountManagerIcon" src="resources/icons/appicon.png">
 
 # PvzFusionAccountManager
 
 ## Overview
 
-This is an account manager for the fan game PVZFusion made by LanPiaoPiao.
+**PvzFusionAccountManager** is an account manager for the fan game *PVZFusion* by LanPiaoPiao.
 
-- It allows creating multiple accounts with independent versioning and then selecting one to play the game with.
-- Acts as the main entry point for the game, allowing starting and closing the game
+- Create and manage multiple accounts with independent versioning.
+- Select which account to play with.
+- Acts as the main entry point for the game, allowing you to start and close it directly.
+
+---
 
 ## Motivation
 
-On my birthday a friend of mine wanted to play a round of PvzFusion on my girlfriends account and mine.
-We do wanted to watch him play too, however we did not want to let him make progress on our save.
-So, we thought to ourselves, would'nt it be nice to have an account manager for this game?
-And so we searched for some product in the internet, unfortunately without any results.
+On my birthday, a friend of mine wanted to play a round of *PvzFusion* using my girlfriend’s account and mine.  
+We also wanted to watch him play without letting him affect our progress.
 
-And so the pvz fusion account manager was born.
+So, we thought: *wouldn’t it be nice to have an account manager for this game?*  
+We searched online but found no existing solutions.
 
-We quickly began to develop it and come up with first sketches.
+Thus, **PvzFusion Account Manager** was born.
 
-This repo contains the final product and also the installer for the manager.
+We quickly began development and sketched the first ideas.
 
-As it started out as a hobby project, things might not be completely polished.
-Feel free to contribute
+This repo contains the final product and the installer for the manager.
 
-We hope to not only solve our, but also every pvzfusion fans problem with this.
+> As it started as a hobby project, feel free to contribute!
+
+We hope this tool will solve not only our problem but also every PvzFusion fan’s problem.
+
+---
 
 ## Installation
 
-The installation works via an installer found here: [installer](Output/installer.exe) 
+The manager installs via an installer found here: [installer](Output/installer.exe)
 
-### Installer warning
+### Installer Warning
 
-The installer will warn you that the author is not a trusted publisher. 
+The installer may warn that the author is not a trusted publisher.
 
-It is the same problem that pvzfusion faces: Registering apps with trusted signatures costs a lot of money and is just not worth the cost.
+> This is the same issue *PvzFusion* faces. Registering apps with trusted signatures costs a lot of money and is not worth it for this project.  
+> The warning does **not** affect functionality.
 
-The warning does not make the product less functional.
+---
 
-## Getting started
+## Getting Started
 
-### On app startup
+### On App Startup
 
-The app searches for your downloaded `PlantsVsZombiesFusionRH.exe` and the directory in which the game saves your game state.
+The app automatically searches for:
 
-If the search for one of them fails, an dialog will popup informing you that you have to give the app the pathes manually by pressing the upload button:
+1. Your downloaded `PlantsVsZombiesFusionRH.exe`
+2. The directory where your game saves are stored
 
-![upload button](resources/icons/upload.svg)
+If either is not found, a dialog will appear prompting you to provide the paths manually:
 
-The `game files` directory will probably not change for the lifetime of pvzfusion. However if it does, you have the ability to set it in the dialog.
+![upload button](readme_sources/uploadExeOrGamefile.png) 
 
-This exact dialog can also later be opened manually via the settings icon.
+> The `game files` directory usually doesn’t change, but if it does, you can update it in the previous dialog.  
+> This dialog can also be opened later via the **settings** icon.
 
-### Playing the game with the account manager
+---
 
-Per default, an account will be created. Select this account and hit the play button:
+### Playing the Game
 
-![play button](resources/icons/play.svg)
+By default, a new account is created. 
 
-To quit, either press the `quit` button in game, or press the stop button in the account manager:
+To play:
 
-![stop button](resources/icons/stop.svg)
+1. Select the account.
+2. Click the **Play** button:
 
-The game will automatically be saved upon pressing either of the buttons.
+![play button](readme_sources/playButton.png)
 
-## Features
+To quit:
 
+- Press **Quit** in-game, or
+- Click the **Stop** button in the account manager:
 
-## Common problems
+![stop button](readme_sources/stopButton.png)
 
+> The game is automatically saved when quitting via either method.
+
+---
+
+### Quick Guide
+
+<div class="flex">
+    Click the
+    <img width="30" height="30" alt="infoButton" src="readme_sources/infoButton.png" style="vertical-align: middle;"/>
+    button to view a simple guide for getting started.
+</div>
+
+---
+
+## Features and Handling
+
+### General Usage
+
+Once you start using the manager, you are **never forced to stay with the manager and can opt out at any moment**.  
+Accounts can always be backed up manually via the **Backup** button (see [Edit Account](#edit-account)).
+
+---
+
+### Refresh
+
+The **Refresh** button:
+
+- Reloads all accounts
+- Verifies that your `.exe` and game files directory exist and are intact
+
+---
+
+### Create New Account
+
+Press the **Create** button. A dialog will appear asking for:
+
+- Desired profile picture
+- Account name (must be unique)
+- Whether to copy from an existing source
+
+You can:
+
+- **Import files** from a directory, or
+- **Copy the last saved state** from an existing account
+
+> If copying from an account, a new symbol will appear with the name of the copied account and a **trashcan** icon.  
+> Clicking the trashcan removes the copy, allowing you to select a new source.  
+> The same happens for imported files, labeled as `Custom gamefile`.
+
+![custom game files](readme_sources/customGameFiles.png)
+
+---
+
+### Edit Account
+
+Right-click on an account to open the options dialog:
+
+| Option | Description                                                                                            |
+|--------|--------------------------------------------------------------------------------------------------------|
+| Trashcan | Permanently delete the account                                                                         |
+| Edit | Change the account’s name or profile picture                                                           |
+| Previous Saves | Switch to a previous version (last 5 sessions saved). **Note:** newer versions are permanently deleted |
+| Backup | Save the last playing state of the account to a directory on your PC <br/>(This ensures you can always manually save your progress if you prefer not to rely solely on the app.)                                |
+
+![options dialog](readme_sources/optionsDialog.png)
+
+---
+
+### Changing the Selected `.exe` or Game Files Location
+
+Press the **Settings** button to open the welcome dialog.
+
+Here you can manually change:
+
+- The `.exe` path
+- The game files directory
+
+<div style="border-left: 2px solid #FFD700; padding: 10px; background: #373839">
+  It is recommended <strong>not to change the game files directory</strong> if it is detected correctly.<br>
+  If not, the default path for PvzFusion is (as of version 3.4):
+<code>Users\YourUser\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH</code>
+</div>
+
+**See** [Getting started](#getting-started)
+
+---
+
+## Common Problems
+
+### Switching Versions
+
+If you’ve played multiple sessions and want to revert to an older version:
+
+- Versions newer than the one you select will be deleted.
+- Confirm deletion to restore the account to the desired state.
+
+> Example: Selecting version 2 out of 4 will delete versions 1 and 2, where 1 is newest and 4 is oldest.  
+> The versions that will be deleted are marked with **a red x** in the example picture (**NOT in the actual application**) <br/>
+> Your account will reflect the state as of the selected session timestamp.
+
+![Switch versions help](readme_sources/SwitchVersionsHelp.png)
+
+---
 
 ## License and Copyright
+
+[License](license.txt)
+
+
+## Concept Art and early sketches
+
+Here is how the manager would have looked, if my girlfriend hadn't been there:
+
+<div class="flex">
+    <img width="300" alt="Main page old" src="readme_sources/concept_art/originalMainPage.png">
+    <img width="300" alt="Main page old" src="readme_sources/concept_art/originalCreation.png">
+    <img width="300" alt="Main page old" src="readme_sources/concept_art/originalDeletion.png">
+</div>
+
+## Last words
+
+**Credits**: Lukas Beschorner did the coding and Lana Langen did the art and design
+
