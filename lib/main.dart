@@ -23,7 +23,7 @@ void main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(525, 800),
     maximumSize: Size(525, 800),
-    minimumSize: Size(525, 800),
+    minimumSize: Size(525, 440),
     center: true,
     titleBarStyle: TitleBarStyle.hidden,
     title: "PvzFusionAccountManager",
