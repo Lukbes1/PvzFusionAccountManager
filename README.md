@@ -10,6 +10,7 @@
 - Select which account to play with.
 - Acts as the main entry point for the game, allowing you to start and close it directly.
 
+![App Overview](readme_sources/appOverview.png)
 ---
 
 ## Motivation
@@ -34,7 +35,9 @@ We hope this tool will solve not only our problem but also every PvzFusion fanâ€
 
 ## Installation
 
-The manager installs via an installer found here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.0)
+The application is currently only available for Windows.
+
+The installer for Windows can be found here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.0)
 
 ### Installer Warning
 
