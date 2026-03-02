@@ -171,8 +171,51 @@ Here you can manually change:
 
 ---
 
-## Common Problems
+## Common Problems and How To`s
 
+### How to NOT lose your (original) account
+
+The account manager internally uses the same **game files directory** where *PVZFusion* stores your save files after closing the game or making new progress.
+
+The app may add, delete, or move data from and to this directory when switching accounts or versions.
+
+If you do not fully trust the manager, you have the following options to take precautions:
+
+- Whenever you feel unsure about the state of the app, press [Backup](#edit-account) and save your files to a safe location.  
+  This backup can:
+    - Be manually placed back into the game files directory (as of 02.03.2026):  
+      `Users\YourUser\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH`
+    - Be used to create a new account via [Create new account](#create-new-account) → add existing game files → import files.
+
+- If the app behaves unexpectedly or does not work at all, uninstall it and choose **`NO`** when asked whether your accounts should be deleted.  
+  Then reinstall the app.  
+  Your accounts will remain intact as long as you do not confirm deletion during uninstallation.
+
+- **If none of the above works** (requires some technical knowledge):  
+  Navigate to  
+  `%AppData%\local\lukbessolutions\pvz_fusion_acc_manager\`
+
+  Inside, you will find a `.db` file containing all your accounts.  
+  This file is an **SQLite database**.
+
+  Using any SQLite database browser, open the database and locate the table containing your account data.  
+  All stored save files are located inside this `.db` file and can be extracted manually if necessary.
+
+### Moving away from this manager
+
+If you want to permanently stop using this manager, follow these steps carefully:
+
+1. For safety, create a backup by pressing [Backup](#edit-account) on the account you want to keep and store it somewhere safe.
+2. Start the game via the account manager using the version you want to preserve.
+3. Uninstall the manager and confirm all deletions.
+4. Start the game normally (without the manager), as you did before installing this application.
+
+    - If your account loads correctly → you are done.
+    - If no account appears → continue to step 5.
+
+5. Take the backup files created in Step 1 and paste them into the game files directory (as of 02.03.2026):  
+   `Users\YourUser\AppData\LocalLow\LanPiaoPiao\PlantsVsZombiesRH`
+6. Start the game again, your files should be loaded correctly. If not, make sure ALL files from the backup are in the pasted directory.
 ### Switching Versions
 
 If you’ve played multiple sessions and want to revert to an older version:
@@ -180,7 +223,7 @@ If you’ve played multiple sessions and want to revert to an older version:
 - Versions newer than the one you select will be deleted.
 - Confirm deletion to restore the account to the desired state.
 
-> Example: Selecting version 2 out of 4 will delete versions 1 and 2, where 1 is newest and 4 is oldest.  
+> Example: Selecting version 3 out of 4 will delete versions 1 and 2, where 1 is newest and 4 is oldest.  
 > The versions that will be deleted are marked with **a red x** in the example picture (**NOT in the actual application**) <br/>
 > Your account will reflect the state as of the selected session timestamp.
 
