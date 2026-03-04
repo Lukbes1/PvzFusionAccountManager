@@ -37,7 +37,7 @@ We hope this tool will solve not only our problem but also every PvzFusion fanâ€
 
 The application is currently only available for Windows.
 
-The installer for Windows can be found here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.0)
+The installer for Windows can be found here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.3)
 
 ### Installer Warning
 
