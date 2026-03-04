@@ -1,3 +1,6 @@
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/lukbes1/PvzFusionAccountManager/total)
+
+
 <img width="256" alt="pvzFusionAccountManagerIcon" src="resources/icons/appicon.png">
 
 # PvzFusionAccountManager
