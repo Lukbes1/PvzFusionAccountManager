@@ -162,7 +162,7 @@ class GameService {
     try {
       await _db.transaction((txn) async {
         if (!skipKillingGame) {
-          await killPvzFusionProcess(currentPvzFusionExe!);
+          await killPvzFusionProcess(currentPvzFusionExe);
         }
         await _accountService.stopPlayingWith(txn, accountToStop);
         startAccount = true;
