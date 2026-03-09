@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer' show log;
 import 'dart:io';
 
@@ -118,29 +117,61 @@ class ExplorerFileService {
     String exeName,
     Duration waitFor,
   ) async {
-    final result = await Process.start('powershell', [
+    final seconds = waitFor.inSeconds;
+
+    final script =
+        r'''
+$exe = "''' +
+        exeName +
+        r'''.exe"
+
+$commonPaths = @(
+ "C:\$env:USERPROFILE\Desktop",
+ "C:\Games",
+ "$env:USERPROFILE"
+)
+
+$job = Start-Job -ScriptBlock {
+    param($exe,$commonPaths)
+
+    foreach ($p in $commonPaths) {
+        if (Test-Path $p) {
+            $found = Get-ChildItem $p -Filter $exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            if ($found) { return $found.FullName }
+        }
+    }
+
+    $drives = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" |
+              Select-Object -ExpandProperty DeviceID
+
+    foreach ($d in $drives) {
+        $found = Get-ChildItem "$d\" -Filter $exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($found) { return $found.FullName }
+    }
+
+} -ArgumentList $exe,$commonPaths
+
+if (Wait-Job $job -Timeout ''' +
+        seconds.toString() +
+        r''') {
+    Receive-Job $job
+} else {
+    Stop-Job $job
+}
+
+Remove-Job $job
+''';
+
+    final result = await Process.run('powershell', [
+      '-NoProfile',
       '-Command',
-      'Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3" | Select-Object -ExpandProperty DeviceID |ForEach-Object { where.exe /r "\$_\\" $exeName.exe } | Select-Object -First 1',
+      script,
     ]);
 
-    final timer = Timer(waitFor, () {
-      log('done Waiting');
-      Process.killPid(result.pid);
-    });
+    final output = (result.stdout as String).trim();
+    if (output.isEmpty) return null;
 
-    String? exe;
-    await for (final line
-        in result.stdout.transform(utf8.decoder).transform(LineSplitter())) {
-      if (line.isNotEmpty) {
-        log('Found: $line');
-        exe = line;
-        timer.cancel();
-        result.kill();
-        break;
-      }
-    }
-    await result.exitCode;
-    return exe;
+    return output.split('\n').first.trim();
   }
 
   ///Gibt den relativen Pfad vom pvzFusion dir zur Datei

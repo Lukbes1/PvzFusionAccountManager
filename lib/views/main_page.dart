@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:pvz_fusion_acc_manager/views/helper/general_green_button.dart';
-import 'package:pvz_fusion_acc_manager/views/helper/general_svg_hover_icon_button.dart';
-import 'package:pvz_fusion_acc_manager/views/helper/top_shadow_wrapper.dart';
+import 'package:pvz_fusion_acc_manager/models/provider/accounts_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/startup_files_provider.dart';
+import 'package:pvz_fusion_acc_manager/style/colors.dart';
 import 'package:pvz_fusion_acc_manager/style/shadows.dart';
+import 'package:pvz_fusion_acc_manager/style/text.dart';
 import 'package:pvz_fusion_acc_manager/views/accounts_view.dart';
 import 'package:pvz_fusion_acc_manager/views/bottom_bar.dart';
-import 'package:pvz_fusion_acc_manager/style/colors.dart';
-import 'package:pvz_fusion_acc_manager/models/provider/accounts_provider.dart';
-import 'package:pvz_fusion_acc_manager/style/text.dart';
 import 'package:pvz_fusion_acc_manager/views/dialogs/create_account/create_account_dialog.dart';
 import 'package:pvz_fusion_acc_manager/views/dialogs/create_account/create_account_dialog_result.dart';
 import 'package:pvz_fusion_acc_manager/views/dialogs/startup_files_blocker_dialog.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_green_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/general_svg_hover_icon_button.dart';
+import 'package:pvz_fusion_acc_manager/views/helper/top_shadow_wrapper.dart';
 import 'package:pvz_fusion_acc_manager/views/info_button.dart';
 import 'package:pvz_fusion_acc_manager/views/ingame_gate.dart';
 
