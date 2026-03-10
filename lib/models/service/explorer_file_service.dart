@@ -12,6 +12,7 @@ class CantWriteFileToPVZFusionDataException {}
 
 class CantDeleteFilesFromPVZFusionDirException {
   final String error;
+
   CantDeleteFilesFromPVZFusionDirException(this.error);
 
   @override
@@ -117,17 +118,20 @@ class ExplorerFileService {
     String exeName,
     Duration waitFor,
   ) async {
-    final seconds = waitFor.inSeconds;
-
     final script =
         r'''
 $exe = "''' +
         exeName +
         r'''.exe"
+ $timeout = ''' +
+        waitFor.inSeconds.toString() +
+        r''' ## seconds
+ $RetryInterval = 1 ## seconds
 
 $commonPaths = @(
- "C:\$env:USERPROFILE\Desktop",
+ "$env:USERPROFILE\Desktop",
  "C:\Games",
+ "D:\Games",
  "$env:USERPROFILE"
 )
 
@@ -136,7 +140,7 @@ $job = Start-Job -ScriptBlock {
 
     foreach ($p in $commonPaths) {
         if (Test-Path $p) {
-            $found = Get-ChildItem $p -Filter $exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+            $found = Get-ChildItem $p -Filter $exe -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
             if ($found) { return $found.FullName }
         }
     }
@@ -145,22 +149,33 @@ $job = Start-Job -ScriptBlock {
               Select-Object -ExpandProperty DeviceID
 
     foreach ($d in $drives) {
-        $found = Get-ChildItem "$d\" -Filter $exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+        $found = Get-ChildItem "$d\" -Filter $exe -File -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
         if ($found) { return $found.FullName }
     }
-
 } -ArgumentList $exe,$commonPaths
 
-if (Wait-Job $job -Timeout ''' +
-        seconds.toString() +
-        r''') {
-    Receive-Job $job
-} else {
-    Stop-Job $job
+$isjobStillRunning = {param($job) $job.State -eq 'Running'}
+$timer = [Diagnostics.Stopwatch]::StartNew()
+
+while (($timer.Elapsed.TotalSeconds -lt $timeout) -and (& $isjobStillRunning $job))
+{
+    Start-Sleep -Seconds $RetryInterval
+
+    $totalSeconds = [math]::Round($timer.Elapsed.TotalSeconds, 0)
+    Write-Output "Still waiting for action to complete after [$totalSeconds] seconds..."
 }
 
-Remove-Job $job
-''';
+$result = Receive-Job $job
+Remove-Job $job -Force
+if ($result) {
+    Write-Output "$result"
+} else {
+    Write-Output "File not found within timeout."
+}
+$timer.Stop()
+
+    
+    ''';
 
     final result = await Process.run('powershell', [
       '-NoProfile',
@@ -169,9 +184,13 @@ Remove-Job $job
     ]);
 
     final output = (result.stdout as String).trim();
-    if (output.isEmpty) return null;
+    if (output.isEmpty ||
+        !output.contains(exeName) ||
+        (result.stderr as String).isNotEmpty) {
+      return null;
+    }
 
-    return output.split('\n').first.trim();
+    return output.split('\n').last.trim();
   }
 
   ///Gibt den relativen Pfad vom pvzFusion dir zur Datei
