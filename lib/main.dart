@@ -1,17 +1,26 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart' show Intl;
 import 'package:intl/intl_standalone.dart';
+import 'package:logger/logger.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pvz_fusion_acc_manager/style/colors.dart';
 import 'package:pvz_fusion_acc_manager/style/shadows.dart';
 import 'package:pvz_fusion_acc_manager/views/main_page.dart';
 import 'package:pvz_fusion_acc_manager/views/title_bar.dart';
-import 'package:window_manager/window_manager.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:window_manager/window_manager.dart';
 import 'package:zentoast/zentoast.dart';
+
+late final Logger errorLogger;
+late final Logger infoLogger;
+late final Logger debugLogger;
 
 void main() async {
   timeago.setLocaleMessages('en', timeago.EnMessages());
@@ -19,6 +28,10 @@ void main() async {
   await windowManager.ensureInitialized();
   sqfliteFfiInit();
   databaseFactory = databaseFactoryFfi;
+
+  errorLogger = await _buildFileLogger('errorLogs', 10);
+  infoLogger = await _buildFileLogger('infoLogs', 4);
+  debugLogger = await _buildConsoleLogger(Level.debug);
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(525, 800),
@@ -37,6 +50,41 @@ void main() async {
   await initializeDateFormatting(Intl.defaultLocale, null);
 
   runApp(ProviderScope(child: ToastProvider.create(child: const App())));
+}
+
+Future<Logger> _buildFileLogger(
+  final String fileName,
+  final int methodCount,
+) async {
+  final logFilePath = join(
+    (await getApplicationCacheDirectory()).path,
+    'Logs',
+    '$fileName.txt',
+  );
+  final logFile = File(logFilePath);
+  if (!await logFile.exists()) {
+    await logFile.create(recursive: true);
+  }
+  return Logger(
+    printer: PrettyPrinter(
+      colors: false,
+      methodCount: methodCount,
+      excludeBox: {Level.all: false},
+      errorMethodCount: 15,
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+    ),
+    output: FileOutput(file: logFile, overrideExisting: true),
+  );
+}
+
+Future<Logger> _buildConsoleLogger(final Level level) async {
+  return Logger(
+    level: level,
+    printer: PrettyPrinter(
+      dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
+    ),
+    output: ConsoleOutput(),
+  );
 }
 
 class App extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:path/path.dart';
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/service/accounts_service.dart';
 import 'package:pvz_fusion_acc_manager/models/service/datei_service.dart';
@@ -12,6 +12,7 @@ class PVZFusionProcessEvent {
   const PVZFusionProcessEvent();
 
   factory PVZFusionProcessEvent.started() = PVZFusionProcessStarted;
+
   factory PVZFusionProcessEvent.stopped(int exitcode) =>
       PVZFusionProcessStopped(exitcode);
 }
@@ -20,6 +21,7 @@ class PVZFusionProcessStarted extends PVZFusionProcessEvent {}
 
 class PVZFusionProcessStopped extends PVZFusionProcessEvent {
   final int exitCode;
+
   PVZFusionProcessStopped(this.exitCode);
 }
 
@@ -31,6 +33,7 @@ class GameService {
   Process? _pvzFusionProcess;
   final _pvzFusionProcessEvents =
       StreamController<PVZFusionProcessEvent>.broadcast();
+
   Stream<PVZFusionProcessEvent> get prvzFusionProcessEvent =>
       _pvzFusionProcessEvents.stream;
 
@@ -95,7 +98,9 @@ class GameService {
         await _switchAccount(txn, accountToStart, pvzFusionDir);
         return true;
       }, exclusive: true);
-      log('Starting game with the following exe: ${pvzFusionExe.path}');
+      debugLogger.d(
+        'Starting game with the following exe: ${pvzFusionExe.path}',
+      );
       _pvzFusionProcess = await Process.start(
         pvzFusionExe.path,
         [],
@@ -104,8 +109,7 @@ class GameService {
       );
 
       if (_pvzFusionProcess == null) {
-        const error = "Could not start pvzFusionExe";
-        log(error);
+        infoLogger.i('Could not start the pvz fusion exe or it already closed');
         unawaited(
           Future(
             () => _pvzFusionProcessEvents.add(
@@ -113,19 +117,23 @@ class GameService {
             ),
           ),
         );
-        return error;
+        return 'Could not start the pvz fusion exe or it already closed';
       } else {
         _pvzFusionProcessEvents.add(PVZFusionProcessEvent.started());
         _pvzFusionProcess?.stdout
             .transform(SystemEncoding().decoder)
-            .listen(log);
+            .listen(debugLogger.d);
         _pvzFusionProcess?.stderr
             .transform(SystemEncoding().decoder)
-            .listen(log);
+            .listen(errorLogger.e);
         unawaited(_handleProcessExit(accountToStart));
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, st) {
+      errorLogger.e(
+        'Could not start the account "${accountToStart.name}"',
+        error: e,
+        stackTrace: st,
+      );
       if (stopAccount) {
         accountToStart.stop();
       }
@@ -141,10 +149,10 @@ class GameService {
 
     try {
       final exitCode = await process.exitCode;
-      log('PVZ Fusion exited with code $exitCode');
+      infoLogger.i('PVZ Fusion exited with code $exitCode');
       _pvzFusionProcessEvents.add(PVZFusionProcessEvent.stopped(exitCode));
     } catch (e, st) {
-      log('Process exit handler failed: $e\n$st');
+      errorLogger.e('Process exit handler failed', error: e, stackTrace: st);
     }
   }
 
@@ -173,7 +181,11 @@ class GameService {
         return null;
       }, exclusive: true);
     } catch (e) {
-      log(e.toString());
+      errorLogger.e(
+        'Could not stop the account',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       if (startAccount) {
         accountToStop.start();
       }
@@ -205,7 +217,7 @@ public class Win32 {
 [Win32]::PostMessage(\$proc.MainWindowHandle, 0x0010, [IntPtr]::Zero, [IntPtr]::Zero)
 """,
         ]);
-        log("Tried killing ${pvzFusionExe.path}");
+        debugLogger.d("Tried killing ${pvzFusionExe.path}");
         currentPvzFusionExe = null;
       }
     }

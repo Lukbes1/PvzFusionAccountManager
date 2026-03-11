@@ -26,6 +26,7 @@ final gameServiceProvider = FutureProvider((ref) async {
   final AccountService accountService = await ref.read(
     accountServiceProvider.future,
   );
+
   final gameService = GameService(
     db: db,
     dateiService: dateiService,

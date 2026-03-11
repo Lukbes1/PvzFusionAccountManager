@@ -1,3 +1,4 @@
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -13,6 +14,10 @@ class ProfilBildService {
   Future<List<ProfilBild>> getAll() async {
     final profilBilder = await _db.query(ProfilBild.profilBildTable);
     if (profilBilder.isEmpty) {
+      errorLogger.e(
+        'Profile pictures were empty',
+        stackTrace: StackTrace.current,
+      );
       throw ProfilBilderEmptyException();
     }
     return profilBilder
@@ -28,6 +33,10 @@ class ProfilBildService {
       limit: 1,
     );
     if (profilBild.isEmpty) {
+      errorLogger.e(
+        'Profile picture with id "$profilBildId" could not be found',
+        stackTrace: StackTrace.current,
+      );
       throw ProfilBildNichtGefundenException();
     }
     return ProfilBild.fromRow(profilBild.single);

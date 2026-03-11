@@ -249,6 +249,15 @@ actual application**) <br/>
 
 ![Switch versions help](readme_sources/SwitchVersionsHelp.png)
 
+### Logging grows to large
+
+The application constantly logs errors and information, which can be found here:
+`C:\Users\YourUser\AppData\Local\lukbessolutions\pvz_fusion_acc_manager\Logs`
+There is no housekeeping mechanism build in. If the files grow to large, delete the logs.
+
+If you encounter errors, please let us know and provide the error logs.
+
+
 ---
 
 ## License and Copyright
