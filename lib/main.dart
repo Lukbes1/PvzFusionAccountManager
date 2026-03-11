@@ -73,7 +73,7 @@ Future<Logger> _buildFileLogger(
       errorMethodCount: 15,
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
-    output: FileOutput(file: logFile, overrideExisting: true),
+    output: FileOutput(file: logFile, overrideExisting: false),
   );
 }
 

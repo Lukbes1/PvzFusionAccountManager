@@ -10,27 +10,29 @@ import 'package:sqflite/sqflite.dart';
 
 final databaseName = "pvzfusionmanager.db";
 final databaseProvider = FutureProvider((ref) async {
-  final dbPath = join(
-    (await getApplicationCacheDirectory()).path,
-    databaseName,
-  );
-  final db = await openDatabase(
-    dbPath,
-    version: 2,
-    onOpen: (db) async {
-      await db.execute('PRAGMA foreign_keys = ON;');
-    },
-    onCreate: (db, version) async {
-      try {
-        const createProfilBildTable = '''CREATE TABLE IF NOT EXISTS ProfilBild(
+  try {
+    final dbPath = join(
+      (await getApplicationCacheDirectory()).path,
+      databaseName,
+    );
+    final db = await openDatabase(
+      dbPath,
+      version: 1,
+      onOpen: (db) async {
+        await db.execute('PRAGMA foreign_keys = ON;');
+      },
+      onCreate: (db, version) async {
+        try {
+          const createProfilBildTable =
+              '''CREATE TABLE IF NOT EXISTS ProfilBild(
     profilBildId INTEGER primary key autoincrement,
     name TEXT not null unique,
     bild BLOB not null
   );
 ''';
-        await db.execute(createProfilBildTable);
+          await db.execute(createProfilBildTable);
 
-        const createAccountTable = '''CREATE TABLE IF NOT EXISTS "Account" (
+          const createAccountTable = '''CREATE TABLE IF NOT EXISTS "Account" (
 	"accountId"	INTEGER primary key autoincrement,
   "inGame" integer not null check(inGame in (0,1)) default 0,
 	"name"	TEXT NOT NULL,
@@ -38,17 +40,17 @@ final databaseProvider = FutureProvider((ref) async {
   "profilBildId" INTEGER NOT NULL REFERENCES ProfilBild(profilBildId)
 );
 ''';
-        await db.execute(createAccountTable);
+          await db.execute(createAccountTable);
 
-        const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Version(
+          const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Version(
 	creationDate TEXT primary key,
   versionNr integer,
 	accountId Integer not null references Account(accountId) on delete cascade
 );
 ''';
-        await db.execute(createVersionTable);
+          await db.execute(createVersionTable);
 
-        const createDateiTable = '''CREATE TABLE IF NOT EXISTS Datei(
+          const createDateiTable = '''CREATE TABLE IF NOT EXISTS Datei(
 	name TEXT not null,
 	relativePath TEXT not null,
 	extension TEXT not null,
@@ -58,46 +60,53 @@ final databaseProvider = FutureProvider((ref) async {
 	primary key(relativePath, name, accountId, versionDate)
 );
 ''';
-        await db.execute(createDateiTable);
+          await db.execute(createDateiTable);
 
-        const createInfoDateienTable = '''
+          const createInfoDateienTable = '''
     CREATE TABLE IF NOT EXISTS InfoDatei(
      name Text primary key,
      path Text not null 
     );
 ''';
 
-        await db.execute(createInfoDateienTable);
+          await db.execute(createInfoDateienTable);
 
-        //Populate profilBilder
+          //Populate profilBilder
 
-        final profilBilder = await _loadProfilBilder();
-        final profilBilderBatch = db.batch();
+          final profilBilder = await _loadProfilBilder();
+          final profilBilderBatch = db.batch();
 
-        for (final ProfilBild profilBild in profilBilder) {
-          final exists = await db.query(
-            ProfilBild.profilBildTable,
-            where: '${ProfilBild.profilBildIdColumn} = ?',
-            whereArgs: [profilBild.profilBildId],
-          );
-          if (exists.isEmpty) {
-            profilBilderBatch.insert(
+          for (final ProfilBild profilBild in profilBilder) {
+            final exists = await db.query(
               ProfilBild.profilBildTable,
-              profilBild.toRow(),
+              where: '${ProfilBild.profilBildIdColumn} = ?',
+              whereArgs: [profilBild.profilBildId],
             );
+            if (exists.isEmpty) {
+              profilBilderBatch.insert(
+                ProfilBild.profilBildTable,
+                profilBild.toRow(),
+              );
+            }
           }
+          await profilBilderBatch.commit(continueOnError: false);
+
+          await _insertCrazyDave(db);
+        } on Exception catch (error) {
+          errorLogger.e(error, stackTrace: StackTrace.current);
+          rethrow;
         }
-        await profilBilderBatch.commit(continueOnError: false);
-
-        await _insertCrazyDave(db);
-      } on Exception catch (error) {
-        errorLogger.e(error, stackTrace: StackTrace.current);
-        rethrow;
-      }
-    },
-  );
-
-  return db;
+      },
+    ).timeout(const Duration(seconds: 30));
+    return db;
+  } catch (e, st) {
+    errorLogger.e(
+      'The database could not be opened!',
+      error: e,
+      stackTrace: st,
+    );
+    rethrow;
+  }
 });
 
 Future<void> _insertCrazyDave(DatabaseExecutor db) async {
