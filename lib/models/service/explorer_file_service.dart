@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer' show log;
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/datei.dart';
 
 class CantGetPVZFusionDataException {}
@@ -30,8 +30,12 @@ class ExplorerFileService {
           pvzDateien.add(entity);
         }
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, st) {
+      errorLogger.e(
+        'Could not retrieve data from the directory "$dir"',
+        error: e,
+        stackTrace: st,
+      );
     }
 
     return pvzDateien;
@@ -53,6 +57,10 @@ class ExplorerFileService {
       await file.parent.create(recursive: true);
       final resultOfWrite = await file.writeAsBytes(datei.inhalt);
       if (!await resultOfWrite.exists()) {
+        errorLogger.e(
+          'Could not write the file ${file.absolute}',
+          stackTrace: StackTrace.current,
+        );
         throw CantWriteFileToPVZFusionDataException();
       }
     }
@@ -76,8 +84,12 @@ class ExplorerFileService {
           await entity.delete(recursive: true);
         }
       }
-    } catch (e) {
-      log(e.toString());
+    } catch (e, st) {
+      errorLogger.e(
+        'Could not kill all files in the pvz fusion directory "$pvzFusionDir"',
+        error: e,
+        stackTrace: st,
+      );
     }
   }
 
@@ -96,7 +108,12 @@ class ExplorerFileService {
       try {
         final createdDir = await directory.create(recursive: true);
         return createdDir;
-      } catch (e) {
+      } catch (e, st) {
+        errorLogger.e(
+          'Could not create the missinng pvz fusion directory and its subdirectories ${directory.absolute}',
+          error: e,
+          stackTrace: st,
+        );
         return null;
       }
     }
@@ -109,7 +126,7 @@ class ExplorerFileService {
     if (result == null) {
       return null;
     }
-    log('Picked folder: $result');
+    debugLogger.d('Picked folder: $result');
     return Directory(result);
   }
 
@@ -187,6 +204,10 @@ $timer.Stop()
     if (output.isEmpty ||
         !output.contains(exeName) ||
         (result.stderr as String).isNotEmpty) {
+      errorLogger.e(
+        'Could not retrieve the pvz fusion exe while automatically searching for it',
+        error: output,
+      );
       return null;
     }
 

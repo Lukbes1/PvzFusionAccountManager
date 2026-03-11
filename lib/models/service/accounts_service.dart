@@ -1,10 +1,13 @@
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AccountAlreadyExistsException {
   final String name;
+
   AccountAlreadyExistsException(this.name);
+
   @override
   String toString() {
     return 'An account already exists with the name: $name';
@@ -13,6 +16,7 @@ class AccountAlreadyExistsException {
 
 class AccountCouldNotBeDeletedException {
   AccountCouldNotBeDeletedException();
+
   @override
   String toString() {
     return 'The Account could not be deleted';
@@ -21,6 +25,7 @@ class AccountCouldNotBeDeletedException {
 
 class AccountNameCouldNotBeUpdatedException {
   AccountNameCouldNotBeUpdatedException();
+
   @override
   String toString() {
     return 'The Account name couldnt be changed';
@@ -29,6 +34,7 @@ class AccountNameCouldNotBeUpdatedException {
 
 class AccountProfilBildCouldNotBeUpdatedException {
   AccountProfilBildCouldNotBeUpdatedException();
+
   @override
   String toString() {
     return 'The Account profile picture couldnt be changed';
@@ -37,7 +43,9 @@ class AccountProfilBildCouldNotBeUpdatedException {
 
 class AnAccountIsAlreadyPlayingException {
   final String name;
+
   AnAccountIsAlreadyPlayingException(this.name);
+
   @override
   String toString() {
     return 'The account $name is already playing. Stop the app via the stop button first';
@@ -46,6 +54,7 @@ class AnAccountIsAlreadyPlayingException {
 
 class AccountIsNotPlayingException {
   AccountIsNotPlayingException();
+
   @override
   String toString() {
     return 'The account is not playing and thus cannot be stopped.';
@@ -54,6 +63,7 @@ class AccountIsNotPlayingException {
 
 class AccountCouldNotBeSetToStartedException {
   AccountCouldNotBeSetToStartedException();
+
   @override
   String toString() {
     return 'The account could not be set to playing';
@@ -62,6 +72,7 @@ class AccountCouldNotBeSetToStartedException {
 
 class AccountCouldNotBeSetToNotPlaying {
   AccountCouldNotBeSetToNotPlaying();
+
   @override
   String toString() {
     return 'The account could not be set to not playing';
@@ -91,7 +102,9 @@ class AccountService {
   /// Creates the account and its first version
   Future<int> createAccount(String name, int profilBildId) async {
     if (name.isEmpty) {
-      throw ArgumentError('Account name cannot be empty');
+      final errorMessage = 'Account name cannot be empty';
+      errorLogger.e(errorMessage);
+      throw ArgumentError(errorMessage);
     }
 
     // Check if account name already exists
@@ -102,6 +115,7 @@ class AccountService {
     );
 
     if (existing.isNotEmpty) {
+      errorLogger.e('The account "$name" already exists');
       throw AccountAlreadyExistsException(name);
     }
 
@@ -170,6 +184,10 @@ class AccountService {
 
     final result = await db.insert(Version.versionTable, newVersion.toRow());
     if (result == 0) {
+      errorLogger.e(
+        'Could not create a new version for the account "${account.name}"',
+        stackTrace: StackTrace.current,
+      );
       throw CouldNotCreateNewVersionException();
     }
     account.upgradeVersion(newVersion.creationDate);
@@ -228,6 +246,10 @@ class AccountService {
       whereArgs: [id],
     );
     if (deletion <= 0) {
+      errorLogger.e(
+        'The account with id "$id" could not be deleted',
+        stackTrace: StackTrace.current,
+      );
       throw AccountCouldNotBeDeletedException();
     }
   }
@@ -243,6 +265,10 @@ class AccountService {
       whereArgs: [accountId],
     );
     if (updates == 0) {
+      errorLogger.e(
+        'The account name with id "$accountId" could not be updated to "$newName"',
+        stackTrace: StackTrace.current,
+      );
       throw AccountNameCouldNotBeUpdatedException();
     }
   }
@@ -258,6 +284,10 @@ class AccountService {
       whereArgs: [accountId],
     );
     if (updates == 0) {
+      errorLogger.e(
+        'The account profile picture with id "$accountId" could not be updated to "$newProfilbild"',
+        stackTrace: StackTrace.current,
+      );
       throw AccountProfilBildCouldNotBeUpdatedException();
     }
   }
@@ -317,6 +347,10 @@ class AccountService {
       whereArgs: [account.accountId],
     );
     if (result == 0) {
+      errorLogger.e(
+        'The account "${account.name}" could not be started',
+        stackTrace: StackTrace.current,
+      );
       throw AccountCouldNotBeSetToStartedException();
     }
     account.start();
@@ -324,6 +358,10 @@ class AccountService {
 
   Future<void> stopPlayingWith(DatabaseExecutor txn, final Account acc) async {
     if (!await isAccountPlayingWithTransaction(acc, txn)) {
+      errorLogger.e(
+        'The account "${acc.name}" is not playing so it can\'t be stopped',
+        stackTrace: StackTrace.current,
+      );
       throw AccountIsNotPlayingException();
     }
 
@@ -334,6 +372,10 @@ class AccountService {
       whereArgs: [acc.accountId],
     );
     if (result == 0) {
+      errorLogger.e(
+        'The account "${acc.name}" could not be set to not playing',
+        stackTrace: StackTrace.current,
+      );
       throw AccountCouldNotBeSetToNotPlaying();
     }
     acc.stop();

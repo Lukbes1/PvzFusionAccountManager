@@ -1,18 +1,18 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/datei.dart';
 import 'package:pvz_fusion_acc_manager/models/data/startup_files_state.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/datei_service_provider.dart';
+import 'package:pvz_fusion_acc_manager/models/provider/db_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/explorer_file_service_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/game_service_provider.dart';
-import 'package:pvz_fusion_acc_manager/models/provider/startup_files_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/provider/profil_bild_provider.dart';
+import 'package:pvz_fusion_acc_manager/models/provider/startup_files_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/service/accounts_service.dart';
-import 'package:pvz_fusion_acc_manager/models/provider/db_provider.dart';
 import 'package:pvz_fusion_acc_manager/models/service/game_service.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -27,6 +27,7 @@ final accountsProvider = AsyncNotifierProvider<AccountsNotifier, List<Account>>(
 
 class AccountsNotifier extends AsyncNotifier<List<Account>> {
   StreamSubscription? _pvzFusionProcessSub;
+
   @override
   Future<List<Account>> build() async {
     final service = await ref.read(accountServiceProvider.future);
@@ -51,7 +52,11 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
           skipKillingGame: true,
         );
         if (badExecution) {
-          state = AsyncError("The exe could not be opened", StackTrace.current);
+          errorLogger.e(
+            'The exe could not be stopped right. Exitcode: ${event.exitCode}',
+            stackTrace: StackTrace.current,
+          );
+          state = AsyncError('The exe had an error', StackTrace.current);
         }
       }
     }
@@ -67,6 +72,11 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
 
       state = AsyncData(accounts);
     } catch (e, st) {
+      errorLogger.e(
+        'Error while loading the accounts',
+        error: e,
+        stackTrace: st,
+      );
       state = AsyncError(e, st);
     }
   }
@@ -122,6 +132,11 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
         [...state.value!, newAccount]..sort((a, b) => a.compareTo(b)),
       );
     } on AccountAlreadyExistsException catch (e, st) {
+      errorLogger.e(
+        'An error occurred while adding a new account with name "$name"',
+        error: e,
+        stackTrace: st,
+      );
       state = AsyncError(e, st);
     }
   }
@@ -146,8 +161,13 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
         }
       }
       state = AsyncData(newAccounts);
-      log('Changed name of \'${accountToUpdate.name}\' to \'$newName\'');
+      debugLogger.d('Changed name of "${accountToUpdate.name}" to "$newName"');
     } catch (e, st) {
+      errorLogger.e(
+        'Could not update the name of "${accountToUpdate.name}" to $newName',
+        error: e,
+        stackTrace: st,
+      );
       state = AsyncError(e, st);
     }
   }
@@ -179,10 +199,15 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
       }
       state = AsyncData(newAccounts);
 
-      log(
-        'Changed profilBild of \'${accountToUpdate.name}\' to \'$newProfilbildId\'',
+      debugLogger.d(
+        'Changed profile picture of "${accountToUpdate.name}" to "$newProfilbildId"',
       );
     } catch (e, st) {
+      errorLogger.e(
+        'Could not update the profile picture of "${accountToUpdate.name}" to $newProfilbildId',
+        error: e,
+        stackTrace: st,
+      );
       state = AsyncError(e, st);
     }
   }
@@ -260,6 +285,11 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
       skipKillingGame: skipKillingGame,
     );
     if (errorMessage != null) {
+      errorLogger.e(
+        'The current account could not be stopped',
+        stackTrace: StackTrace.current,
+        error: errorMessage,
+      );
       state = AsyncError(
         "The account could not be stopped:\n$errorMessage",
         StackTrace.current,
@@ -296,6 +326,11 @@ class AccountsNotifier extends AsyncNotifier<List<Account>> {
       Directory(pvzFusionDir!.infoDatei.path),
     );
     if (errorMessage != null) {
+      errorLogger.e(
+        'The current account can not be started',
+        stackTrace: StackTrace.current,
+        error: errorMessage,
+      );
       state = AsyncError(
         "The account could not be started: \n$errorMessage",
         StackTrace.current,

@@ -1,11 +1,13 @@
 import 'dart:io';
+
+import 'package:path/path.dart' as p;
+import 'package:pvz_fusion_acc_manager/main.dart';
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/datei.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
 import 'package:pvz_fusion_acc_manager/models/service/accounts_service.dart';
 import 'package:pvz_fusion_acc_manager/models/service/explorer_file_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:path/path.dart' as p;
 
 class NoFilesFoundException {}
 
@@ -13,6 +15,7 @@ class DateiService {
   final Database _db;
   final ExplorerFileService _explorerFileService;
   final AccountService _accountService;
+
   const DateiService({
     required Database db,
     required ExplorerFileService explorerFileService,
@@ -117,7 +120,12 @@ class DateiService {
     try {
       await _explorerFileService.killAllInPvzFusionDir(pvzFusionDir);
       await _explorerFileService.writeToPvzFusionData(pvzFusionDir, allDateien);
-    } catch (e) {
+    } catch (e, st) {
+      errorLogger.e(
+        'Could not move all account data into the pvz fusion directory "${pvzFusionDir.absolute}"',
+        error: e,
+        stackTrace: st,
+      );
       throw StateError(e.toString());
     }
   }
@@ -138,9 +146,10 @@ class DateiService {
     final accountId = version?.accountId ?? account.accountId;
     final versionDate = version?.creationDate ?? account.letzteVersionDate;
     if (versionDate == null) {
-      throw StateError(
-        'No active version set for account ${account.accountId}',
-      );
+      final errorMessage =
+          'No active version set for account ${account.accountId}';
+      errorLogger.e(errorMessage);
+      throw StateError(errorMessage);
     }
     final result = await db.query(
       Datei.dateiTable,
@@ -156,9 +165,10 @@ class DateiService {
       if (anyFiles.isEmpty) {
         return []; //If account is fresh,
       }
-      throw StateError(
-        'This error should not have happened: You might closed the app to quickly',
-      );
+      final errorMessage =
+          'This error should not have happened: You might closed the app to quickly';
+      errorLogger.e(errorMessage);
+      throw StateError(errorMessage);
     }
     return result.map((element) => Datei.fromRow(element)).toList();
   }
