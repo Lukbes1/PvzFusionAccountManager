@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pvz_fusion_acc_manager/main.dart' show errorLogger;
+import 'package:pvz_fusion_acc_manager/main.dart' show errorLogger, infoLogger;
 import 'package:pvz_fusion_acc_manager/models/data/account.dart';
 import 'package:pvz_fusion_acc_manager/models/data/profil_bild.dart';
 import 'package:pvz_fusion_acc_manager/models/data/version.dart';
@@ -17,84 +17,16 @@ final databaseProvider = FutureProvider((ref) async {
     );
     final db = await openDatabase(
       dbPath,
-      version: 1,
+      version: 2,
       onOpen: (db) async {
         await db.execute('PRAGMA foreign_keys = ON;');
       },
       onCreate: (db, version) async {
-        try {
-          const createProfilBildTable =
-              '''CREATE TABLE IF NOT EXISTS ProfilBild(
-    profilBildId INTEGER primary key autoincrement,
-    name TEXT not null unique,
-    bild BLOB not null
-  );
-''';
-          await db.execute(createProfilBildTable);
-
-          const createAccountTable = '''CREATE TABLE IF NOT EXISTS "Account" (
-	"accountId"	INTEGER primary key autoincrement,
-  "inGame" integer not null check(inGame in (0,1)) default 0,
-	"name"	TEXT NOT NULL,
-	"creationDate" TEXT NOT NULL UNIQUE,
-  "profilBildId" INTEGER NOT NULL REFERENCES ProfilBild(profilBildId)
-);
-''';
-          await db.execute(createAccountTable);
-
-          const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Version(
-	creationDate TEXT primary key,
-  versionNr integer,
-	accountId Integer not null references Account(accountId) on delete cascade
-);
-''';
-          await db.execute(createVersionTable);
-
-          const createDateiTable = '''CREATE TABLE IF NOT EXISTS Datei(
-	name TEXT not null,
-	relativePath TEXT not null,
-	extension TEXT not null,
-	accountId Integer not null references Account(accountId) on delete cascade,
-	versionDate TEXT not null references Version(creationDate) on delete cascade,
-	inhalt BLOB not null,
-	primary key(relativePath, name, accountId, versionDate)
-);
-''';
-          await db.execute(createDateiTable);
-
-          const createInfoDateienTable = '''
-    CREATE TABLE IF NOT EXISTS InfoDatei(
-     name Text primary key,
-     path Text not null 
-    );
-''';
-
-          await db.execute(createInfoDateienTable);
-
-          //Populate profilBilder
-
-          final profilBilder = await _loadProfilBilder();
-          final profilBilderBatch = db.batch();
-
-          for (final ProfilBild profilBild in profilBilder) {
-            final exists = await db.query(
-              ProfilBild.profilBildTable,
-              where: '${ProfilBild.profilBildIdColumn} = ?',
-              whereArgs: [profilBild.profilBildId],
-            );
-            if (exists.isEmpty) {
-              profilBilderBatch.insert(
-                ProfilBild.profilBildTable,
-                profilBild.toRow(),
-              );
-            }
-          }
-          await profilBilderBatch.commit(continueOnError: false);
-
-          await _insertCrazyDave(db);
-        } on Exception catch (error) {
-          errorLogger.e(error, stackTrace: StackTrace.current);
-          rethrow;
+        await _onCreate(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await _onUpgradeV2(db);
         }
       },
     ).timeout(const Duration(seconds: 30));
@@ -108,6 +40,90 @@ final databaseProvider = FutureProvider((ref) async {
     rethrow;
   }
 });
+
+Future<void> _onCreate(Database db) async {
+  try {
+    infoLogger.i('Start creating the database...');
+    const createProfilBildTable = '''CREATE TABLE IF NOT EXISTS ProfilBild(
+    profilBildId INTEGER primary key autoincrement,
+    name TEXT not null unique,
+    bild BLOB not null
+  );
+''';
+    await db.execute(createProfilBildTable);
+    infoLogger.i('Successfully created the profile pictures table');
+
+    const createAccountTable = '''CREATE TABLE IF NOT EXISTS "Accounts" (
+	"accountId"	INTEGER primary key autoincrement,
+  "inGame" integer not null check(inGame in (0,1)) default 0,
+	"name"	TEXT NOT NULL,
+	"creationDate" TEXT NOT NULL UNIQUE,
+  "profilBildId" INTEGER NOT NULL REFERENCES ProfilBild(profilBildId)
+);
+''';
+    await db.execute(createAccountTable);
+    infoLogger.i('Successfully created the accounts table');
+
+    const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Version(
+	creationDate TEXT primary key,
+  versionNr integer,
+	accountId Integer not null references Account(accountId) on delete cascade
+);
+''';
+    await db.execute(createVersionTable);
+    infoLogger.i('Successfully created the versions table');
+
+    const createDateiTable = '''CREATE TABLE IF NOT EXISTS Datei(
+	name TEXT not null,
+	relativePath TEXT not null,
+	extension TEXT not null,
+	accountId Integer not null references Account(accountId) on delete cascade,
+	versionDate TEXT not null references Version(creationDate) on delete cascade,
+	inhalt BLOB not null,
+	primary key(relativePath, name, accountId, versionDate)
+);
+''';
+    await db.execute(createDateiTable);
+    infoLogger.i('Successfully created the files table');
+
+    const createInfoDateienTable = '''
+    CREATE TABLE IF NOT EXISTS InfoDatei(
+     name Text primary key,
+     path Text not null 
+    );
+''';
+
+    await db.execute(createInfoDateienTable);
+
+    infoLogger.i('Successfully created the info files table');
+
+    //Populate profilBilder
+
+    final profilBilder = await _loadProfilBilder();
+    final profilBilderBatch = db.batch();
+
+    for (final ProfilBild profilBild in profilBilder) {
+      profilBilderBatch.insert(
+        ProfilBild.profilBildTable,
+        profilBild.toRow(),
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+      infoLogger.i('Inserted ${profilBild.name} to the batch');
+    }
+    await profilBilderBatch.commit(continueOnError: false);
+    infoLogger.i('Committed the batch successfully');
+
+    await _insertCrazyDave(db);
+    infoLogger.i('Inserted crazy dave successfully');
+  } on Exception catch (error) {
+    errorLogger.e(error, stackTrace: StackTrace.current);
+    rethrow;
+  }
+}
+
+Future<void> _onUpgradeV2(Database db) async {
+  await db.execute('ALTER TABLE "Account" RENAME TO "Accounts";');
+}
 
 Future<void> _insertCrazyDave(DatabaseExecutor db) async {
   final date = DateTime.now().toUtc().toIso8601String();

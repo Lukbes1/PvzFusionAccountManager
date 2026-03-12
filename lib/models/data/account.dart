@@ -5,7 +5,9 @@ class Account implements Comparable {
   final String name;
   final String creationDate;
   String? _letzteVersionDate;
+
   String? get letzteVersionDate => _letzteVersionDate;
+
   String get letzteVersionDateFormatted {
     if (_letzteVersionDate == null) {
       return "";
@@ -27,8 +29,10 @@ class Account implements Comparable {
       _letzteVersionDate == null ? null : DateTime.parse(_letzteVersionDate!);
 
   int _inGame = 0;
+
   int get inGame => _inGame;
   int _profilBildId;
+
   int get profilBildId => _profilBildId;
 
   static const String accountIdColumn = "accountId";
@@ -36,7 +40,7 @@ class Account implements Comparable {
   static const String nameColumn = "name";
   static const String creationDateColumn = "creationDate";
   static const String profilBildIdColumn = "profilBildId";
-  static const String accountTable = "Account";
+  static const String accountTable = "Accounts";
 
   Account({
     required this.accountId,
