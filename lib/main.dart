@@ -69,7 +69,7 @@ Future<Logger> _buildFileLogger(
     printer: PrettyPrinter(
       colors: false,
       methodCount: methodCount,
-      excludeBox: {Level.all: false},
+      noBoxingByDefault: false,
       errorMethodCount: 15,
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
@@ -81,6 +81,8 @@ Future<Logger> _buildConsoleLogger(final Level level) async {
   return Logger(
     level: level,
     printer: PrettyPrinter(
+      noBoxingByDefault: true,
+      excludeBox: {Level.all: true},
       dateTimeFormat: DateTimeFormat.onlyTimeAndSinceStart,
     ),
     output: ConsoleOutput(),
