@@ -8,7 +8,7 @@ class Version {
   static const String creationDateColumn = "creationDate";
   static const String versionNrColumn = "versionNr";
   static const String accountIdColumn = "accountId";
-  static const String versionTable = "Version";
+  static const String versionTable = "Versions";
 
   String get playedOnFormatted {
     final localTimeCreationDate = DateTime.parse(creationDate).toLocal();

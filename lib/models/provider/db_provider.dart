@@ -17,7 +17,7 @@ final databaseProvider = FutureProvider((ref) async {
     );
     final db = await openDatabase(
       dbPath,
-      version: 2,
+      version: 3,
       onOpen: (db) async {
         await db.execute('PRAGMA foreign_keys = ON;');
       },
@@ -27,6 +27,9 @@ final databaseProvider = FutureProvider((ref) async {
       onUpgrade: (db, oldVersion, newVersion) async {
         if (oldVersion < 2) {
           await _onUpgradeV2(db);
+        }
+        if (oldVersion < 3) {
+          await _onUpgradeV3(db);
         }
       },
     ).timeout(const Duration(seconds: 30));
@@ -58,16 +61,18 @@ Future<void> _onCreate(Database db) async {
   "inGame" integer not null check(inGame in (0,1)) default 0,
 	"name"	TEXT NOT NULL,
 	"creationDate" TEXT NOT NULL UNIQUE,
-  "profilBildId" INTEGER NOT NULL REFERENCES ProfilBild(profilBildId)
+  "profilBildId" INTEGER NOT NULL,
+   FOREIGN KEY (profilBildId) REFERENCES ProfilBild(profilBildId)
 );
 ''';
     await db.execute(createAccountTable);
     infoLogger.i('Successfully created the accounts table');
 
-    const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Version(
+    const createVersionTable = ''' CREATE TABLE IF NOT EXISTS Versions(
 	creationDate TEXT primary key,
   versionNr integer,
-	accountId Integer not null references Account(accountId) on delete cascade
+	accountId Integer not null,
+	FOREIGN KEY (accountId) REFERENCES Accounts(accountId) ON DELETE CASCADE
 );
 ''';
     await db.execute(createVersionTable);
@@ -123,6 +128,10 @@ Future<void> _onCreate(Database db) async {
 
 Future<void> _onUpgradeV2(Database db) async {
   await db.execute('ALTER TABLE "Account" RENAME TO "Accounts";');
+}
+
+Future<void> _onUpgradeV3(Database db) async {
+  await db.execute('ALTER TABLE "Version" RENAME TO "Versions";');
 }
 
 Future<void> _insertCrazyDave(DatabaseExecutor db) async {

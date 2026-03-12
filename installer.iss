@@ -1,5 +1,5 @@
 #define MyAppName "PvzFusionAccountManager"
-#define MyAppVersion "1.0.7"
+#define MyAppVersion "1.0.9"
 #define MyAppPublisher "Lukbessolutions"
 #define MyAppExeName "pvz_fusion_acc_manager.exe"
 
