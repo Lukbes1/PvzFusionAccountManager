@@ -32,6 +32,22 @@ This repo contains the final product and the installer for the manager.
 
 We hope this tool will solve not only our problem but also every PvzFusion fan’s problem.
 
+### Sidenotes
+
+As of version 3.5, the game has a built-in simple account manager, allowing creation, deletion and
+renaming of accounts.
+
+**What does this fan made manager do different?**
+
+- Version history reaching as far as your 5 last played sessions.
+- Copying your accounts
+- Backing up your accounts
+- Loading an account from a folder
+- Visually appealing interface, made to feel like the style of PVZFusion
+- Working independently from the PVZFusions versioning -> The fan made PVZFusion Account Manager
+  works for all versions, not only from 3.5 upwards
+- Profile pictures :D
+
 ---
 
 ## Installation
