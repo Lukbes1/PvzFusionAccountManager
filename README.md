@@ -57,7 +57,7 @@ renaming of accounts.
 The application is currently only available for Windows.
 
 The installer for Windows can be found
-here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.4)
+here: [installer](https://github.com/Lukbes1/PvzFusionAccountManager/releases/tag/v1.0.9)
 
 ### Installer Warning
 
